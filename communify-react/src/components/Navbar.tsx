@@ -1,6 +1,3 @@
-import React, { FC, memo } from "react";
-import Button from "./Button";
-import { AiFillHome } from "react-icons/ai";
 import { FiSearch } from "react-icons/fi";
 import { SiQuora } from "react-icons/si";
 import { MdHome } from "react-icons/md";
@@ -47,6 +44,7 @@ const navbar: FC<Props> = (props) => {
       </div>
     </nav>
   );
+
 };
 
 navbar.defaultProps = {};

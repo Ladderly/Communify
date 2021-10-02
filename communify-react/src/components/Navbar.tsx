@@ -3,6 +3,8 @@ import { SiQuora } from "react-icons/si";
 import { MdHome } from "react-icons/md";
 import { BiBookAdd } from "react-icons/bi";
 import { HiOutlineMenu } from "react-icons/hi";
+import { FC, memo } from "react";
+import Button from "./Button";
 interface Props {}
 
 const navbar: FC<Props> = (props) => {

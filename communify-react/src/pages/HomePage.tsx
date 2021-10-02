@@ -1,10 +1,15 @@
-import React, { FC, memo } from "react";
+import { FC, memo } from "react";
+import AddQuestionModal from "../components/AddQuestionModal";
 
 interface Props {}
 
 const HomePage: FC<Props> = (props) => {
-  return <div></div>;
-};
+  return(
+    <div>
+      <AddQuestionModal/>
+    </div>
+  )
+}
 
 HomePage.defaultProps = {};
 

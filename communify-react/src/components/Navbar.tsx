@@ -7,7 +7,7 @@ import { FC, memo } from "react";
 import Button from "./Button";
 interface Props {}
 
-const navbar: FC<Props> = (props) => {
+const Navbar: FC<Props> = (props) => {
   return (
     <nav className="flex h-16 lg:space-x-12 md:space-x-10 md:mx-16 mx-6 sm:mx-4 sm:space-x-0 items-center justify-between">
       <div className="flex">
@@ -49,6 +49,6 @@ const navbar: FC<Props> = (props) => {
 
 };
 
-navbar.defaultProps = {};
+Navbar.defaultProps = {};
 
-export default memo(navbar);
+export default memo(Navbar);

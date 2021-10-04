@@ -1,4 +1,4 @@
-import { FC, Fragment, memo, useRef, useState } from "react";
+import { FC, Fragment, memo, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import Button from "./Button";
 import { Dialog, Transition } from "@headlessui/react";

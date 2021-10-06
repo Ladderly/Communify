@@ -9,13 +9,13 @@ interface Props {}
 
 const Navbar: FC<Props> = (props) => {
   return (
-    <nav className="flex h-16 lg:space-x-12 md:space-x-10 md:mx-16 mx-6 sm:mx-4 sm:space-x-0 items-center justify-between">
+    <nav className="sticky top-0 z-10 flex items-center justify-between h-16 mx-6 bg-white lg:space-x-12 md:space-x-10 md:mx-16 sm:mx-4 sm:space-x-0">
       <div className="flex">
         <SiQuora className="w-12 h-10" />
       </div>
 
-      <div className="sm:flex justify-between hidden w-full items-center">
-        <div className="flex lg:space-x-10 md:space-x-7 sm:space-x-4 ml-10">
+      <div className="items-center justify-between hidden w-full sm:flex">
+        <div className="flex ml-10 lg:space-x-10 md:space-x-7 sm:space-x-4">
           <a href="#" className="w-7 h-7 bg-gray">
             <MdHome className="w-7 h-7" />
           </a>
@@ -24,7 +24,7 @@ const Navbar: FC<Props> = (props) => {
           </a>
         </div>
 
-        <div className="flex p-3 hover:border-2 border-solid border-2 rounded-full lg:w-2/4 md:w-1/3 sm:w-1/3 justify-between mx-4">
+        <div className="flex justify-between p-3 mx-4 border-2 border-solid rounded-full hover:border-2 lg:w-2/4 md:w-1/3 sm:w-1/3">
           <input
             type="text"
             className="w-2/4 focus:outline-none"
@@ -35,7 +35,7 @@ const Navbar: FC<Props> = (props) => {
           </button>
         </div>
 
-        <div className="flex  lg:space-x-6 md:space-x-4 sm:space-x-4">
+        <div className="flex lg:space-x-6 md:space-x-4 sm:space-x-4">
           <Button theme="outline">Sign in</Button>
           <Button>Sign up</Button>
         </div>
@@ -46,7 +46,6 @@ const Navbar: FC<Props> = (props) => {
       </div>
     </nav>
   );
-
 };
 
 Navbar.defaultProps = {};

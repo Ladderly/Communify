@@ -33,7 +33,7 @@ const Navbar: FC<Props> = (props) => {
              <FiSearch className="absolute right-0 w-5 h-5 mr-2 top-3 text-secondary-400"></FiSearch>
              <input
               type="text"
-              className="justify-between w-full p-3 mx-4 border border-2 border-transparent border-solid rounded-full focus:outline-none hover:border-2 focus:ring-2 focus:ring-secondary-200 focus:border-transparent"
+              className="justify-between w-full p-3 mx-4 border-2 border-transparent border-solid rounded-full focus:outline-none hover:border-2 focus:ring-2 focus:ring-secondary-200 focus:border-transparent"
               placeholder="What are you looking for?"
             />
              </div>

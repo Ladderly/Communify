@@ -14,33 +14,33 @@ const Navbar: FC<Props> = (props) => {
 
   return (
     <>
-      <nav className="sticky top-0 z-10 flex  h-16 lg:space-x-12 md:space-x-10 md:mx-16 px-6 sm:mx-4 sm:space-x-0 items-center justify-between bg-white">
+      <nav className="sticky top-0 z-10 flex items-center justify-between h-16 px-6 bg-white lg:space-x-12 md:space-x-10 md:mx-16 sm:mx-4 sm:space-x-0">
         <div className="flex">
           <SiQuora className="w-12 h-10" />
         </div>
 
-        <div className="sm:flex justify-between hidden w-full items-center">
-          <div className="flex lg:space-x-10 md:space-x-7 sm:space-x-4 ml-10">
-            <a href="#" className="w-7 h-7 bg-gray">
+        <div className="items-center justify-between hidden w-full sm:flex">
+          <div className="flex ml-10 lg:space-x-10 md:space-x-7 sm:space-x-4">
+            <button className="w-7 h-7 bg-gray">
               <MdHome className="w-7 h-7" />
-            </a>
-            <a href="#" className="w-7 h-7">
+            </button>
+            <button className="w-7 h-7">
               <BiBookAdd className="w-7 h-7" />
-            </a>
-          </div>
-
-          <div className="flex p-3 hover:border-2 border-solid border-2 rounded-full lg:w-2/4 md:w-1/3 sm:w-1/3 justify-between mx-4">
-            <input
-              type="text"
-              className="w-2/4 focus:outline-none"
-              placeholder="What are you looking for?"
-            />
-            <button type="submit" className="searchButton">
-              <FiSearch className="w-5 h-5 ml-2"></FiSearch>
             </button>
           </div>
 
-          <div className="flex  lg:space-x-6 md:space-x-4 sm:space-x-4">
+             <div className="relative lg:w-2/4 md:w-1/3 sm:w-1/3">
+             <FiSearch className="absolute right-0 w-5 h-5 mr-2 top-3 text-secondary-400"></FiSearch>
+             <input
+              type="text"
+              className="justify-between w-full p-3 mx-4 border border-2 border-transparent border-solid rounded-full focus:outline-none hover:border-2 focus:ring-2 focus:ring-secondary-200 focus:border-transparent"
+              placeholder="What are you looking for?"
+            />
+             </div>
+    
+        
+
+          <div className="flex lg:space-x-6 md:space-x-4 sm:space-x-4">
             <Button theme="outline">Sign in</Button>
             <Button>Sign up</Button>
           </div>
@@ -67,7 +67,7 @@ const Navbar: FC<Props> = (props) => {
             leaveFrom="opacity-50"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="top-16 fixed inset-0 bg-black sm:hidden" />
+            <Dialog.Overlay className="fixed inset-0 bg-black top-16 sm:hidden" />
           </Transition.Child>
           <Transition.Child
             as={Fragment}
@@ -78,17 +78,17 @@ const Navbar: FC<Props> = (props) => {
             leaveFrom="translate-x-0"
             leaveTo="translate-x-full"
           >
-            <div className="sm:hidden top-16 transform flex h-full border-2 bg-gray-200 fixed bottom-0 right-0 w-40 pl-2  flex-col space-y-4">
-              <button className="w-7 text-center font-bold">
+            <div className="fixed bottom-0 right-0 flex flex-col w-40 h-full pl-2 space-y-4 transform bg-gray-200 border-2 sm:hidden top-16">
+              <button className="font-bold text-center w-7">
                 Home
               </button>
-              <button className="w-7 text-center font-bold">
+              <button className="font-bold text-center w-7">
                 Topics
               </button>
-              <button className="w-7 text-center font-bold">
+              <button className="font-bold text-center w-7">
                 Login
               </button>
-              <button className="w-7 text-center font-bold">
+              <button className="font-bold text-center w-7">
                 SignUp
               </button>
             </div>

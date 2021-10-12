@@ -1,11 +1,11 @@
 import { FC, memo } from "react";
-import AddQuestionModal from "../components/AddQuestionModal";
-import Navbar from "../components/Navbar";
-import QACard from "../components/QACard";
+import AddQuestionModal from "../../components/AddQuestionModal";
+import Navbar from "../../components/Navbar";
+import QACard from "../../components/QACard";
 
 interface Props {}
 
-const HomePage: FC<Props> = (props) => {
+const Home: FC<Props> = (props) => {
   return (
     <div>
       <Navbar />
@@ -40,6 +40,6 @@ const HomePage: FC<Props> = (props) => {
   );
 };
 
-HomePage.defaultProps = {};
+Home.defaultProps = {};
 
-export default memo(HomePage);
+export default memo(Home);

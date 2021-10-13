@@ -1,11 +1,25 @@
 import React from "react";
-import Home from "./pages/AppContainer/Home.page";
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
+import AppContainerPage from "./pages/AppContainer/AppContainer.page";
+import AuthPage from "./pages/Auth/Auth.page";
 
 function App() {
   return (
-    <div>
-      <Home />
-    </div>
+    <>
+      <BrowserRouter>
+        <Switch>
+          <Route path="/" exact>
+            <Redirect to="/home" />
+          </Route>
+          <Route path={["/login", "/signup"]} exact>
+            <AuthPage />
+          </Route>
+          <Route path={["/home", "/profile"]} exact>
+            <AppContainerPage />
+          </Route>
+        </Switch>
+      </BrowserRouter>
+    </>
   );
 }
 

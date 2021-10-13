@@ -1,6 +1,5 @@
 import { FC, memo } from "react";
 import AddQuestionModal from "../../components/AddQuestionModal";
-import Navbar from "../../components/Navbar";
 import QACard from "../../components/QACard";
 
 interface Props {}
@@ -8,7 +7,6 @@ interface Props {}
 const Home: FC<Props> = (props) => {
   return (
     <div>
-      <Navbar />
       <div className="flex flex-col mt-10 space-y-4">
         <QACard
           title="Ayaan Bhai kaise kar lete ho?"

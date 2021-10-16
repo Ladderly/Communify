@@ -7,11 +7,20 @@ import { GrClose } from "react-icons/gr";
 import { FC, Fragment, memo, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import Button from "./Button";
-interface Props { }
+import { auth } from "../firebase";
+import { useHistory } from "react-router";
+interface Props {}
 
 const Navbar: FC<Props> = (props) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const history = useHistory();
+  const signOut = () => {
+    return auth.signOut();
+  };
+  const handleSignOut = () => {
+    signOut();
+    history.push("/login");
+  };
   return (
     <>
       <nav className="sticky top-0 z-10 flex items-center justify-between h-16 px-6 bg-white lg:space-x-12 md:space-x-10 md:mx-16 sm:mx-4 sm:space-x-0">
@@ -29,16 +38,14 @@ const Navbar: FC<Props> = (props) => {
             </button>
           </div>
 
-             <div className="relative lg:w-2/4 md:w-1/3 sm:w-1/3">
-             <FiSearch className="absolute right-0 w-5 h-5 mr-2 top-3 text-secondary-400"></FiSearch>
-             <input
+          <div className="relative lg:w-2/4 md:w-1/3 sm:w-1/3">
+            <FiSearch className="absolute right-0 w-5 h-5 mr-2 top-3 text-secondary-400"></FiSearch>
+            <input
               type="text"
               className="justify-between w-full p-3 mx-4 border-2 border-transparent border-solid rounded-full focus:outline-none hover:border-2 focus:ring-2 focus:ring-secondary-200 focus:border-transparent"
               placeholder="What are you looking for?"
             />
-             </div>
-    
-        
+          </div>
 
           <div className="flex lg:space-x-6 md:space-x-4 sm:space-x-4">
             <Button theme="outline">Sign in</Button>
@@ -49,14 +56,12 @@ const Navbar: FC<Props> = (props) => {
         <div className="sm:hidden">
           <button onClick={() => setIsMenuOpen(true)}>
             {!isMenuOpen && <HiOutlineMenu className="w-10 h-10" />}
-            {isMenuOpen && < GrClose className="w-10 h-10" />}
+            {isMenuOpen && <GrClose className="w-10 h-10" />}
           </button>
         </div>
       </nav>
       <Transition.Root show={isMenuOpen} as={Fragment}>
-        <Dialog
-          open={isMenuOpen}
-          onClose={setIsMenuOpen}>
+        <Dialog open={isMenuOpen} onClose={setIsMenuOpen}>
           <Transition.Child
             as={Fragment}
             enter="transition-opacity duration-300"
@@ -79,17 +84,15 @@ const Navbar: FC<Props> = (props) => {
             leaveTo="translate-x-full"
           >
             <div className="fixed bottom-0 right-0 flex flex-col w-40 h-full pl-2 space-y-4 transform bg-gray-200 border-2 sm:hidden top-16">
-              <button className="font-bold text-center w-7">
-                Home
-              </button>
-              <button className="font-bold text-center w-7">
-                Topics
-              </button>
-              <button className="font-bold text-center w-7">
-                Login
-              </button>
-              <button className="font-bold text-center w-7">
-                SignUp
+              <button className="font-bold text-center w-7">Home</button>
+              <button className="font-bold text-center w-7">Topics</button>
+              <button className="font-bold text-center w-7">Login</button>
+              <button className="font-bold text-center w-7">SignUp</button>
+              <button
+                onClick={() => handleSignOut()}
+                className="font-bold text-center w-7"
+              >
+                SignOut
               </button>
             </div>
           </Transition.Child>

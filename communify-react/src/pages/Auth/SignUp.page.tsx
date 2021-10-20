@@ -2,9 +2,8 @@ import React, { FC, memo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import Button from "../../components/Button";
 import { auth, firestore } from "../../firebase";
-import SignupForm from "../../components/SignupForm";
 
-interface Props { }
+interface Props {}
 
 const SignUp: FC<Props> = (props) => {
   const [loading, setLoading] = useState(false);
@@ -23,16 +22,23 @@ const SignUp: FC<Props> = (props) => {
       auth
         .createUserWithEmailAndPassword(email, password)
         .then((ref) => {
-          ref?.user?.updateProfile({
-            displayName: firstName + " " + lastName,
-          });
-          firestore.collection("usersCollection").add({
-            uid: ref.user!.uid,
-            displayName: ref.user?.displayName,
-          });
+          ref.user
+            ?.updateProfile({
+              displayName: firstName + " " + lastName,
+            })
+            .then(() => {
+              firestore.collection("users").doc().set({
+                uid: ref.user?.uid,
+                displayName: ref.user?.displayName,
+                email: ref.user?.email,
+              });
+            });
           resolve(ref);
         })
-        .catch((error) => reject(error));
+        .catch((error) => {
+          console.log(error.message);
+          reject(error);
+        });
     });
     return promise;
   };
@@ -56,26 +62,81 @@ const SignUp: FC<Props> = (props) => {
       });
   };
   return (
-    <div className="w-full min-h-screen bg-login bg-no-repeat flex flex-col justify-center bg-fill">
+    <div className="flex flex-col justify-center w-full min-h-screen bg-no-repeat bg-login bg-fill">
       <div className="flex bg-white flex-col sm:justify-center sm:w-4/6 w-3/5 mx-auto p-1.5 overflow-scroll">
-        <h1 className="sm:text-5xl text-3xl text-center">QUORA</h1>
+        <h1 className="text-3xl text-center sm:text-5xl">QUORA</h1>
 
         <div className="flex sm:h-80 justify-center p-1 space-x-0.5">
           {/* continue with*/}
-          <div className=" invisible sm:visible p-1 flex-1"></div>
-
-          {/* border */} <div className="sm:border-2 invisible sm:visible"></div>
-
+          <div className="flex-1 invisible p-1 sm:visible"></div>
+          {/* border */}{" "}
+          <div className="invisible sm:border-2 sm:visible"></div>
           <div className="flex-1 p-1">
-            <SignupForm />
-          </div>
+            <form
+              onSubmit={(e) => handleSignUp(e)}
+              action=""
+              className="flex flex-col space-y-3 "
+            >
+              <div className="text-xl sm:text-center sm:text-3xl">SignUp</div>
+              <div className="flex flex-col space-y-1">
+                <label htmlFor="text" className="text-lg">
+                  FirstName
+                </label>
+                <input
+                  ref={firstNameRef}
+                  className="border-2 border-transparent border-solid rounded-full focus:outline-none hover:border-2 focus:ring-2 focus:ring-secondary-200 focus:border-transparent"
+                  type="text"
+                  name="firstName"
+                  autoComplete="off"
+                />
+              </div>
+              <div className="flex flex-col space-y-1">
+                <label htmlFor="text" className="text-lg">
+                  LastName
+                </label>
+                <input
+                  ref={lastNameRef}
+                  className="border-2 border-transparent border-solid rounded-full focus:outline-none hover:border-2 focus:ring-2 focus:ring-secondary-200 focus:border-transparent"
+                  type="text"
+                  name="lastName"
+                  autoComplete="off"
+                />
+              </div>
 
+              <div className="flex flex-col space-y-1">
+                <label htmlFor="email" className="text-lg">
+                  Email
+                </label>
+                <input
+                  ref={emailRef}
+                  className="border-2 border-transparent border-solid rounded-full focus:outline-none hover:border-2 focus:ring-2 focus:ring-secondary-200 focus:border-transparent"
+                  type="text"
+                  name="email"
+                  autoComplete="off"
+                />
+              </div>
+
+              <div className="flex flex-col space-y-1">
+                <label htmlFor="password" className="text-lg">
+                  Password
+                </label>
+                <input
+                  ref={passwordRef}
+                  className="border-2 border-transparent border-solid rounded-full focus:outline-none hover:border-2 focus:ring-2 focus:ring-secondary-200 focus:border-transparent"
+                  type="password"
+                  name="password"
+                />
+              </div>
+
+              <Button className="w-20">Signup</Button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-Signup.defaultProps = {};
+SignUp.defaultProps = {};
 
-export default memo(Signup);
+export default memo(SignUp);

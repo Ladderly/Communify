@@ -1,8 +1,11 @@
-import { FC, Fragment, memo, useState } from "react";
+import { FC, Fragment, memo, useContext, useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import Button from "./Button";
 import { Dialog, Transition } from "@headlessui/react";
 import { GoPlus } from "react-icons/go";
+import { firestore } from "../firebase";
+import { AuthContext } from "../context/AuthContext";
+import firebase from "firebase/compat";
 
 interface Props {}
 
@@ -10,11 +13,22 @@ const AddQuestionModal: FC<Props> = (props) => {
   let [isOpen, setIsOpen] = useState(false);
 
   const closeModal = () => {
+    console.log("close");
     setIsOpen(false);
   };
 
   const openModal = () => {
     setIsOpen(true);
+  };
+  const user = useContext(AuthContext);
+  const newQuestionRef = useRef<HTMLInputElement>(null);
+
+  const addNewQuestion = () => {
+    firestore.collection("questions").doc().set({
+      questionText: newQuestionRef.current!.value,
+      uid: user?.uid,
+      created: firebase.firestore.Timestamp.now(),
+    });
   };
   return (
     <div className="fixed bottom-10 right-1/3">
@@ -49,7 +63,7 @@ const AddQuestionModal: FC<Props> = (props) => {
             leaveTo="opacity-0 scale-95"
           >
             <div className="flex h-screen">
-              <div className="relative m-auto bg-gray-100 shadow-md h-96 w-96">
+              <div className="relative h-auto m-auto bg-gray-100 rounded-md shadow-md w-96">
                 <div className="p-2">
                   <IoMdClose
                     onClick={closeModal}
@@ -59,6 +73,7 @@ const AddQuestionModal: FC<Props> = (props) => {
                     Add Question
                   </Dialog.Title>
                   <input
+                    ref={newQuestionRef}
                     className="w-full mt-24 placeholder-gray-400 bg-gray-100 border-b-2 border-gray-400 hover:border-secondary-400 focus:outline-none"
                     type="text"
                     placeholder="Start your question with 'What','How','Why',etc."
@@ -69,7 +84,13 @@ const AddQuestionModal: FC<Props> = (props) => {
                   <Button onClick={closeModal} theme="outline">
                     Cancel
                   </Button>
-                  <Button onClick={closeModal} theme="fill">
+                  <Button
+                    onClick={() => {
+                      closeModal();
+                      addNewQuestion();
+                    }}
+                    theme="fill"
+                  >
                     Add Question
                   </Button>
                 </div>

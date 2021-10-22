@@ -1,16 +1,52 @@
-import React, { FC, memo, useRef, useState } from "react";
+import { Alert, TextField } from "@mui/material";
+import React, { FC, memo, useState } from "react";
 import { useHistory } from "react-router";
 import Button from "../../components/Button";
 import { auth } from "../../firebase";
+import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 interface Props {}
 
 const Login: FC<Props> = (props) => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [emailErrorVisibility, setEmailErrorVisibility] = useState(false);
+  const [passwordErrorVisibility, setPasswordErrorVisibility] = useState(false);
   const history = useHistory();
-  const passwordRef = useRef<HTMLInputElement>(null);
-  const emailRef = useRef<HTMLInputElement>(null);
+  const handleError = (code: string) => {
+    switch (code) {
+      case "auth/user-not-found":
+        setEmailError("E-mail not registered");
+        setEmailErrorVisibility(true);
+        break;
+      case "auth/wrong-password":
+        setPasswordError("Invalid password");
+        setPasswordErrorVisibility(true);
+        break;
+    }
+  };
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().required("Email is required").email("Email is invalid"),
+    password: Yup.string()
+      .required("Password is required")
+      .min(6, "Password must be at least 6 characters")
+      .max(20, "Password must not exceed 20 characters"),
+  });
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
+  const onSubmit = (data: any) => {
+    handleSignIn();
+    console.log(JSON.stringify(data, null, 2));
+  };
   const signIn = (email: string, password: string) => {
     let promise = new Promise((resolve, reject) => {
       auth
@@ -21,87 +57,100 @@ const Login: FC<Props> = (props) => {
     return promise;
   };
 
-  const handleSignIn = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
+  const handleSignIn = () => {
     setLoading(true);
-    const email = emailRef.current!.value;
-    const password = passwordRef.current!.value;
+    const email = getValues("email");
+    const password = getValues("password");
     signIn(email, password)
       .then((ref) => {
         setLoading(false);
         history.push("/home");
       })
       .catch((err) => {
-        setError(err.message);
+        handleError(err.code);
         console.log(err.message);
         setLoading(false);
       });
   };
-  const passwordReset = (email: string) => {
-    let promise = new Promise((reject, resolve) => {
-      auth
-        .sendPasswordResetEmail(email)
-        .then(() => {
-          resolve(`Password Reset Email sent to ${email}`);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-    return promise;
-  };
+  // const passwordReset = (email: string) => {
+  //   let promise = new Promise((reject, resolve) => {
+  //     auth
+  //       .sendPasswordResetEmail(email)
+  //       .then(() => {
+  //         resolve(`Password Reset Email sent to ${email}`);
+  //       })
+  //       .catch((error) => {
+  //         reject(error);
+  //       });
+  //   });
+  //   return promise;
+  // };
 
   return (
-    <div className="flex flex-col justify-center w-full min-h-screen bg-no-repeat bg-login bg-fill">
-      <div className="flex bg-white flex-col sm:justify-center sm:w-4/6 w-3/5 h-5/6 mx-auto space-y-2 p-1.5">
-        <div className="flex justify-center h-3/6">
-          <h1 className="text-3xl text-center sm:text-5xl">QUORA</h1>
-        </div>
-
-        <div className="flex h-80 justify-center p-1 space-x-0.5">
-          {/* continue with*/}
-          <div className="invisible p-1 sm:visible sm:w-4/5"></div>
-          {/* border */}{" "}
-          <div className="invisible sm:border-2 sm:visible"></div>
-          <div className="w-4/5 p-1 sm:w-4/5">
-            <form
-              onSubmit={(e) => handleSignIn(e)}
-              action=""
-              className="flex flex-col space-y-4 "
-            >
-              <div className="text-xl sm:text-center sm:text-3xl">Login</div>
-
-              <div className="flex flex-col space-y-2">
-                <label htmlFor="email" className="text-lg">
-                  Email
-                </label>
-                <input
-                  ref={emailRef}
-                  className="border-2 border-transparent border-solid rounded-full focus:outline-none hover:border-2 focus:ring-2 focus:ring-secondary-200 focus:border-transparent"
-                  type="text"
-                  name="email"
-                  autoComplete="off"
-                />
-              </div>
-
-              <div className="flex flex-col space-y-2 ">
-                <label htmlFor="email" className="text-lg">
-                  Password
-                </label>
-                <input
-                  ref={passwordRef}
-                  className="border-2 border-transparent border-solid rounded-full focus:outline-none hover:border-2 focus:ring-2 focus:ring-secondary-200 focus:border-transparent"
-                  type="password"
-                  name="password"
-                />
-              </div>
-
-              <Button className="w-20">Login</Button>
-            </form>
-          </div>
+    <div className="relative w-full min-h-screen overflow-auto bg-cover bg-login">
+      <div className="absolute w-5/6 h-auto px-4 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg sm:px-0 sm:w-3/5 top-1/2 left-1/2">
+        <h1 className="my-4 font-serif text-4xl font-semibold text-center sm:text-5xl text-secondary-400">
+          Ladderly
+        </h1>
+        <p className="my-6 text-sm font-semibold text-center text-secondary-300">
+          Join the community to share knowledge and better your skills
+        </p>
+        <div className="flex py-8 ">
+          <div className="flex-1 hidden px-8 border-r-2 border-secondary-400 sm:block"></div>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col flex-1 mx-8 space-y-8 text-center"
+          >
+            <TextField
+              color="success"
+              label="Email"
+              size="small"
+              variant="outlined"
+              {...register("email")}
+              error={errors.email ? true : false}
+              helperText={errors.email?.message}
+            />
+            <TextField
+              color="success"
+              label="Password"
+              type="password"
+              size="small"
+              variant="outlined"
+              {...register("password")}
+              error={errors.password ? true : false}
+              helperText={errors.password?.message}
+            />
+            <p className="text-sm font-semibold text-center cursor-pointer text-secondary-400">
+              Forgot Password?
+            </p>
+            <Button loading={loading} className="block w-20 ml-auto">
+              Sign In
+            </Button>
+          </form>
         </div>
       </div>
+      {emailErrorVisibility && (
+        <Alert
+          onClose={() => {
+            setEmailErrorVisibility(false);
+          }}
+          className="absolute left-0 right-0 mx-auto transition duration-1000 ease-in-out w-96 top-16"
+          severity="error"
+        >
+          {emailError}
+        </Alert>
+      )}
+      {passwordErrorVisibility && (
+        <Alert
+          onClose={() => {
+            setPasswordErrorVisibility(false);
+          }}
+          className="absolute left-0 right-0 mx-auto transition duration-1000 ease-in-out w-96 top-16"
+          severity="error"
+        >
+          {passwordError}
+        </Alert>
+      )}
     </div>
   );
 };

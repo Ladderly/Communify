@@ -14,7 +14,7 @@ function App() {
           <Route path={["/login", "/signup"]} exact>
             <AuthPage />
           </Route>
-          <Route path={["/home", "/profile"]} exact>
+          <Route path={["/home", "/profile", "/question"]} exact>
             <AppContainerPage />
           </Route>
         </Switch>

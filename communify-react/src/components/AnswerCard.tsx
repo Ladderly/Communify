@@ -7,13 +7,12 @@ import { IoMdShareAlt } from "react-icons/io";
 import { useHistory } from "react-router";
 
 interface Props {
-  title: string;
   resolver: string;
   answer: string;
   imgSrc?: string;
 }
 
-const QACard: FC<Props> = ({ title, resolver, answer, imgSrc }) => {
+const AnswerCard: FC<Props> = ({ resolver, answer, imgSrc }) => {
   const history = useHistory();
   const [readMore, setReadMore] = useState(false);
   return (
@@ -30,9 +29,6 @@ const QACard: FC<Props> = ({ title, resolver, answer, imgSrc }) => {
           />
           <span className="font-semibold text-gray-700">{resolver}</span>
         </div>
-        <a onClick={() => {
-          history.push("/question");
-        }} className="hover:underline"> <h2 className="my-4 text-lg font-semibold cursor-pointer">{title}</h2></a>
         {!readMore && (
           <div className="overflow-hidden max-h-16">
             <p>{answer}</p>
@@ -84,6 +80,6 @@ const QACard: FC<Props> = ({ title, resolver, answer, imgSrc }) => {
   );
 };
 
-QACard.defaultProps = {};
+AnswerCard.defaultProps = {};
 
-export default memo(QACard);
+export default memo(AnswerCard);

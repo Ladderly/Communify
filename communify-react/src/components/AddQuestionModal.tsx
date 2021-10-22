@@ -1,4 +1,12 @@
-import { FC, Fragment, memo, useContext, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  Fragment,
+  memo,
+  SyntheticEvent,
+  useContext,
+  useState,
+} from "react";
 import { IoMdClose } from "react-icons/io";
 import Button from "./Button";
 import { Dialog, Transition } from "@headlessui/react";
@@ -6,12 +14,23 @@ import { GoPlus } from "react-icons/go";
 import { firestore } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
 import firebase from "firebase/compat";
+import { Autocomplete, TextField } from "@mui/material";
+import { useHistory } from "react-router";
 
 interface Props {}
-
+export const tags = [
+  "Java",
+  "React",
+  "C++",
+  "Machine Learning",
+  "C",
+  "Python",
+  "Angular",
+  "Web Development",
+  "Competitive Programming",
+];
 const AddQuestionModal: FC<Props> = (props) => {
   let [isOpen, setIsOpen] = useState(false);
-
   const closeModal = () => {
     console.log("close");
     setIsOpen(false);
@@ -21,13 +40,28 @@ const AddQuestionModal: FC<Props> = (props) => {
     setIsOpen(true);
   };
   const user = useContext(AuthContext);
-  const newQuestionRef = useRef<HTMLInputElement>(null);
-
+  const history = useHistory();
+  const [question, setQuestion] = useState<string>("");
+  const [tag, setTag] = useState<string | null>("");
+  const [value, setValue] = useState("");
+  const handleQuestionChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+    setQuestion(e.target.value);
+  };
+  const handleTagChange = (
+    e: SyntheticEvent<Element, Event>,
+    value: string | null
+  ) => {
+    setTag(value);
+  };
   const addNewQuestion = () => {
+    console.log(question);
+    console.log(tag);
     firestore.collection("questions").doc().set({
-      questionText: newQuestionRef.current!.value,
+      questionText: question,
       uid: user?.uid,
       created: firebase.firestore.Timestamp.now(),
+      tag: tag,
     });
   };
   return (
@@ -72,22 +106,56 @@ const AddQuestionModal: FC<Props> = (props) => {
                   <Dialog.Title className="text-lg font-semibold text-center text-secondary-400">
                     Add Question
                   </Dialog.Title>
-                  <input
-                    ref={newQuestionRef}
-                    className="w-full mt-24 placeholder-gray-400 bg-gray-100 border-b-2 border-gray-400 hover:border-secondary-400 focus:outline-none"
-                    type="text"
-                    placeholder="Start your question with 'What','How','Why',etc."
+                  <TextField
+                    id="outlined-multiline-flexible"
+                    label="Enter your Question"
+                    multiline
+                    maxRows={4}
+                    sx={{
+                      marginTop: 4,
+                    }}
+                    color="success"
+                    fullWidth
+                    placeholder={
+                      "Start your question with 'What','How','Why',etc."
+                    }
+                    value={value}
+                    onChange={handleQuestionChange}
+                  />
+                  <Autocomplete
+                    onChange={handleTagChange}
+                    className="mt-5"
+                    disablePortal
+                    id="combo-box-demo"
+                    options={tags}
+                    sx={{
+                      width: 200,
+                    }}
+                    renderInput={(params) => (
+                      <TextField color="success" {...params} label="Tag" />
+                    )}
                   />
                 </div>
                 <hr className="mt-40 border-b-2 border-secondary-400"></hr>
                 <div className="flex justify-end mx-1 my-3 space-x-1">
-                  <Button onClick={closeModal} theme="outline">
+                  <Button
+                    onClick={() => {
+                      closeModal();
+                      setValue("");
+                    }}
+                    theme="outline"
+                  >
                     Cancel
                   </Button>
                   <Button
                     onClick={() => {
                       closeModal();
-                      addNewQuestion();
+                      setValue("");
+                      if (user) {
+                        addNewQuestion();
+                      } else {
+                        history.push("/login");
+                      }
                     }}
                     theme="fill"
                   >

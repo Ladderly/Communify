@@ -30,9 +30,14 @@ const QACard: FC<Props> = ({ title, resolver, answer, imgSrc }) => {
           />
           <span className="font-semibold text-gray-700">{resolver}</span>
         </div>
-        <a onClick={() => {
-          history.push("/question");
-        }} className="hover:underline"> <h2 className="my-4 text-lg font-semibold cursor-pointer">{title}</h2></a>
+        <h2
+          onClick={() => {
+            history.push("/question");
+          }}
+          className="my-4 text-lg font-semibold cursor-pointer hover:underline"
+        >
+          {title}
+        </h2>
         {!readMore && (
           <div className="overflow-hidden max-h-16">
             <p>{answer}</p>

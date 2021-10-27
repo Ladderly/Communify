@@ -83,8 +83,8 @@ const SignUp: FC<Props> = (props) => {
     const passwordValue = getValues("password");
     signUp(emailValue, passwordValue, firstNameValue, lastNameValue)
       .then((ref) => {
-        setLoading(false);
-        history.push("/home");
+        window.location.href = "/home";
+        // setLoading(false);
       })
       .catch((err) => {
         setLoading(false);
@@ -142,6 +142,15 @@ const SignUp: FC<Props> = (props) => {
               error={errors.password ? true : false}
               helperText={errors.password?.message}
             />
+            <p className="mt-3 text-sm font-semibold text-center cursor-pointer text-secondary-400">
+              Already have an account?{" "}
+              <span
+                onClick={() => history.push("/login")}
+                className="hover:underline"
+              >
+                Sign In
+              </span>
+            </p>
             <Button loading={loading} className="block ml-auto w-28">
               Sign Up
             </Button>

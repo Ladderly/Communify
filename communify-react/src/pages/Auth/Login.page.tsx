@@ -63,8 +63,8 @@ const Login: FC<Props> = (props) => {
     const password = getValues("password");
     signIn(email, password)
       .then((ref) => {
-        setLoading(false);
-        history.push("/home");
+        window.location.href = "/home";
+        // setLoading(false);
       })
       .catch((err) => {
         handleError(err.code);
@@ -120,9 +120,20 @@ const Login: FC<Props> = (props) => {
               error={errors.password ? true : false}
               helperText={errors.password?.message}
             />
-            <p className="text-sm font-semibold text-center cursor-pointer text-secondary-400">
-              Forgot Password?
-            </p>
+            <div>
+              <p className="text-sm font-semibold text-center cursor-pointer text-secondary-400">
+                Forgot Password?
+              </p>
+              <p className="mt-3 text-sm font-semibold text-center cursor-pointer text-secondary-400">
+                Don't have an account?{" "}
+                <span
+                  onClick={() => history.push("/signup")}
+                  className="hover:underline"
+                >
+                  Sign Up
+                </span>
+              </p>
+            </div>
             <Button loading={loading} className="block w-20 ml-auto">
               Sign In
             </Button>

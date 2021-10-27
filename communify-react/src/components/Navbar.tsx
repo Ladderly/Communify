@@ -4,23 +4,28 @@ import { MdHome } from "react-icons/md";
 import { BiBookAdd } from "react-icons/bi";
 import { HiOutlineMenu } from "react-icons/hi";
 import { GrClose } from "react-icons/gr";
-import { FC, Fragment, memo, useState } from "react";
+import { FC, Fragment, memo, useContext, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import Button from "./Button";
 import { auth } from "../firebase";
 import { useHistory } from "react-router";
+import { AuthContext } from "../context/AuthContext";
 interface Props {}
 
 const Navbar: FC<Props> = (props) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const history = useHistory();
+  const user = useContext(AuthContext);
   const signOut = () => {
     return auth.signOut();
   };
   const handleSignOut = () => {
+    // history.push("/login");
     signOut();
-    history.push("/login");
+    window.location.href = "/login";
   };
+  console.log(loading);
   return (
     <>
       <nav className="sticky top-0 z-10 flex items-center justify-between h-16 px-6 bg-white lg:space-x-12 md:space-x-10 md:mx-16 sm:mx-4 sm:space-x-0">
@@ -34,7 +39,10 @@ const Navbar: FC<Props> = (props) => {
               <MdHome className="w-7 h-7" />
             </button>
             <button className="w-7 h-7">
-              <BiBookAdd className="w-7 h-7" />
+              <BiBookAdd
+                onClick={() => history.push("/questionlist")}
+                className="w-7 h-7"
+              />
             </button>
           </div>
 
@@ -47,10 +55,25 @@ const Navbar: FC<Props> = (props) => {
             />
           </div>
 
-          <div className="flex lg:space-x-6 md:space-x-4 sm:space-x-4">
-            <Button theme="outline">Sign in</Button>
-            <Button>Sign up</Button>
-          </div>
+          {!user && !loading ? (
+            <div className="flex lg:space-x-6 md:space-x-4 sm:space-x-4">
+              <Button onClick={() => history.push("/login")} theme="outline">
+                Sign in
+              </Button>
+              <Button onClick={() => history.push("/signup")}>Sign up</Button>
+            </div>
+          ) : (
+            <Button
+              loading={loading}
+              className="w-28"
+              onClick={() => {
+                setLoading(true);
+                handleSignOut();
+              }}
+            >
+              Sign Out
+            </Button>
+          )}
         </div>
 
         <div className="sm:hidden">

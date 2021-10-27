@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar";
 import HomePage from "./Home.page";
 import ProfilePage from "./Profile.page";
 import QuestionPage from "./Question.page";
+import QuestionListPage from "./QuestionList.page";
 
 interface Props {}
 
@@ -20,6 +21,9 @@ const AppContainer: FC<Props> = (props) => {
         </Route>
         <Route path="/question" exact>
           <QuestionPage />
+        </Route>
+        <Route path="/questionlist" exact>
+          <QuestionListPage />
         </Route>
       </Switch>
     </>

@@ -1,15 +1,36 @@
-import React, { FC, memo } from "react";
+import firebase from "firebase/compat";
+import React, { FC, memo, useEffect, useState } from "react";
 import QuestionCard from "../../components/QuestionCard";
+import { firestore } from "../../firebase";
 
 interface Props {}
 
 const QuestionList: FC<Props> = (props) => {
+  const [questionData, setQuestionData] = useState<
+    firebase.firestore.DocumentData[]
+  >([]);
+  useEffect(() => {
+    firestore
+      .collection("questions")
+      .get()
+      .then((questionList) => {
+        questionList.docs.forEach((question) => {
+          setQuestionData((prev) => [...prev, question.data()]);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
   return (
     <div>
-      <QuestionCard>What is React?</QuestionCard>
-      <QuestionCard>What is Javascript?</QuestionCard>
-      <QuestionCard>What is Facebook?</QuestionCard>
-      <QuestionCard>What is Angular?</QuestionCard>
+      {questionData.map((question) => {
+        return (
+          <QuestionCard tag={question.tag} key={question.qid}>
+            {question.questionText}
+          </QuestionCard>
+        );
+      })}
     </div>
   );
 };

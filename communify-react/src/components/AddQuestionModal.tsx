@@ -15,7 +15,6 @@ import { firestore } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
 import firebase from "firebase/compat";
 import { Autocomplete, TextField } from "@mui/material";
-import { useHistory } from "react-router";
 
 interface Props {}
 export const tags = [
@@ -32,6 +31,7 @@ export const tags = [
 const AddQuestionModal: FC<Props> = (props) => {
   let [isOpen, setIsOpen] = useState(false);
   const closeModal = () => {
+    setQuestion("");
     console.log("close");
     setIsOpen(false);
   };
@@ -40,12 +40,10 @@ const AddQuestionModal: FC<Props> = (props) => {
     setIsOpen(true);
   };
   const user = useContext(AuthContext);
-  const history = useHistory();
-  const [question, setQuestion] = useState<string>("");
   const [tag, setTag] = useState<string | null>("");
-  const [value, setValue] = useState("");
+  const [question, setQuestion] = useState<string | null>("");
+  const [toggle, setToggle] = useState<boolean>(false);
   const handleQuestionChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
     setQuestion(e.target.value);
   };
   const handleTagChange = (
@@ -54,15 +52,28 @@ const AddQuestionModal: FC<Props> = (props) => {
   ) => {
     setTag(value);
   };
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setTag(e.target.value);
+  };
   const addNewQuestion = () => {
-    console.log(question);
-    console.log(tag);
-    firestore.collection("questions").doc().set({
-      questionText: question,
-      uid: user?.uid,
-      created: firebase.firestore.Timestamp.now(),
-      tag: tag,
-    });
+    // console.log(question);
+    // console.log(tag);
+    // console.log(input);
+    firestore
+      .collection("questions")
+      .doc()
+      .set({
+        questionText: question,
+        uid: user?.uid,
+        created: firebase.firestore.Timestamp.now(),
+        tag: tag,
+      })
+      .then(() => {
+        setQuestion("");
+        setToggle(false);
+        setTag("");
+      });
   };
   return (
     <div className="fixed bottom-10 right-1/3">
@@ -119,29 +130,55 @@ const AddQuestionModal: FC<Props> = (props) => {
                     placeholder={
                       "Start your question with 'What','How','Why',etc."
                     }
-                    value={value}
+                    value={question}
                     onChange={handleQuestionChange}
                   />
-                  <Autocomplete
-                    onChange={handleTagChange}
-                    className="mt-5"
-                    disablePortal
-                    id="combo-box-demo"
-                    options={tags}
-                    sx={{
-                      width: 200,
-                    }}
-                    renderInput={(params) => (
-                      <TextField color="success" {...params} label="Tag" />
-                    )}
-                  />
+                  {!toggle ? (
+                    <Autocomplete
+                      freeSolo
+                      onChange={handleTagChange}
+                      className="mt-5"
+                      disablePortal
+                      id="free-solo-with-text-demo"
+                      options={tags}
+                      sx={{
+                        width: 200,
+                      }}
+                      renderInput={(params) => (
+                        <TextField color="success" {...params} label="Tag" />
+                      )}
+                    />
+                  ) : (
+                    <TextField
+                      sx={{
+                        marginTop: 3,
+                      }}
+                      color="success"
+                      label="Enter Tag"
+                      size="small"
+                      variant="outlined"
+                      onChange={handleInputChange}
+                    />
+                  )}
+                  {!toggle && (
+                    <p className="mt-3 text-sm font-semibold cursor-pointer text-secondary-400">
+                      Could not find your tag?{" "}
+                      <span
+                        onClick={() => setToggle(true)}
+                        className="hover:underline"
+                      >
+                        Click here
+                      </span>{" "}
+                      to add yours!
+                    </p>
+                  )}
                 </div>
                 <hr className="mt-40 border-b-2 border-secondary-400"></hr>
                 <div className="flex justify-end mx-1 my-3 space-x-1">
                   <Button
                     onClick={() => {
                       closeModal();
-                      setValue("");
+                      setToggle(false);
                     }}
                     theme="outline"
                   >
@@ -150,11 +187,11 @@ const AddQuestionModal: FC<Props> = (props) => {
                   <Button
                     onClick={() => {
                       closeModal();
-                      setValue("");
+                      setToggle(false);
                       if (user) {
                         addNewQuestion();
                       } else {
-                        history.push("/login");
+                        window.location.href = "/login";
                       }
                     }}
                     theme="fill"

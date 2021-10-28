@@ -36,7 +36,10 @@ const Navbar: FC<Props> = (props) => {
         <div className="items-center justify-between hidden w-full sm:flex">
           <div className="flex ml-10 lg:space-x-10 md:space-x-7 sm:space-x-4">
             <button className="w-7 h-7 bg-gray">
-              <MdHome className="w-7 h-7" />
+              <MdHome
+                onClick={() => history.push("/home")}
+                className="w-7 h-7"
+              />
             </button>
             <button className="w-7 h-7">
               <BiBookAdd

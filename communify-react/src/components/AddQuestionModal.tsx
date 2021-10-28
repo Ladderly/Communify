@@ -111,7 +111,10 @@ const AddQuestionModal: FC<Props> = (props) => {
               <div className="relative h-auto m-auto bg-gray-100 rounded-md shadow-md w-96">
                 <div className="p-2">
                   <IoMdClose
-                    onClick={closeModal}
+                    onClick={() => {
+                      closeModal();
+                      setToggle(false);
+                    }}
                     className="absolute w-6 h-6 top-2 left-2 text-secondary-400 hover:bg-gray-200 hover:"
                   />
                   <Dialog.Title className="text-lg font-semibold text-center text-secondary-400">

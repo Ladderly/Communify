@@ -32,7 +32,7 @@ const AddQuestionModal: FC<Props> = (props) => {
   let [isOpen, setIsOpen] = useState(false);
   const closeModal = () => {
     setQuestion("");
-    console.log("close");
+    // console.log("close");
     setIsOpen(false);
   };
 
@@ -62,14 +62,14 @@ const AddQuestionModal: FC<Props> = (props) => {
     // console.log(input);
     firestore
       .collection("questions")
-      .doc()
-      .set({
+      .add({
         questionText: question,
         uid: user?.uid,
         created: firebase.firestore.Timestamp.now(),
         tag: tag,
       })
-      .then(() => {
+      .then((ref) => {
+        ref.update({ qid: ref.id });
         setQuestion("");
         setToggle(false);
         setTag("");

@@ -4,7 +4,6 @@ import Avatar from "./Avatar";
 import { FiArrowDown } from "react-icons/fi";
 import { FaRegThumbsUp, FaRegThumbsDown } from "react-icons/fa";
 import { IoMdShareAlt } from "react-icons/io";
-import { useHistory } from "react-router";
 
 interface Props {
   resolver: string;
@@ -13,7 +12,6 @@ interface Props {
 }
 
 const AnswerCard: FC<Props> = ({ resolver, answer, imgSrc }) => {
-  const history = useHistory();
   const [readMore, setReadMore] = useState(false);
   return (
     <div className="relative w-2/5 mx-auto bg-gray-100 shadow-lg">

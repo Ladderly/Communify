@@ -19,7 +19,7 @@ const AppContainer: FC<Props> = (props) => {
         <Route path="/profile" exact>
           <ProfilePage />
         </Route>
-        <Route path="/question" exact>
+        <Route path="/question/:questionID" exact>
           <QuestionPage />
         </Route>
         <Route path="/questionlist" exact>

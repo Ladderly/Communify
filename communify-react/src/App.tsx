@@ -17,7 +17,12 @@ function App() {
             <AuthPage />
           </Route>
           <Route
-            path={["/home", "/profile", "/question", "/questionlist"]}
+            path={[
+              "/home",
+              "/profile",
+              "/question/:questionID",
+              "/questionlist",
+            ]}
             exact
           >
             <AppContainerPage />

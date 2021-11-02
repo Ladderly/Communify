@@ -57,13 +57,15 @@ const SignUp: FC<Props> = (props) => {
               displayName: firstName + " " + lastName,
             })
             .then(() => {
-              firestore.collection("users").doc().set({
-                uid: ref.user?.uid,
-                displayName: ref.user?.displayName,
-                email: ref.user?.email,
-              });
+              firestore
+                .collection("users")
+                .add({
+                  uid: ref.user?.uid,
+                  displayName: ref.user?.displayName,
+                  email: ref.user?.email,
+                })
+                .then((res) => resolve(res));
             });
-          resolve(ref);
         })
         .catch((error) => {
           handleError(error.code);
@@ -82,11 +84,12 @@ const SignUp: FC<Props> = (props) => {
     const lastNameValue = getValues("lastName");
     const passwordValue = getValues("password");
     signUp(emailValue, passwordValue, firstNameValue, lastNameValue)
-      .then((ref) => {
+      .then(() => {
         window.location.href = "/home";
         // setLoading(false);
       })
       .catch((err) => {
+        console.log(err);
         setLoading(false);
       });
   };

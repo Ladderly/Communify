@@ -26,7 +26,11 @@ const QuestionList: FC<Props> = (props) => {
     <div>
       {questionData.map((question) => {
         return (
-          <QuestionCard tag={question.tag} key={question.qid}>
+          <QuestionCard
+            questionID={question.qid}
+            tag={question.tag}
+            key={question.qid}
+          >
             {question.questionText}
           </QuestionCard>
         );

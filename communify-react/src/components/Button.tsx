@@ -1,6 +1,7 @@
 import { ButtonHTMLAttributes, FC } from "react";
 import { memo } from "react";
 import { ImSpinner8 } from "react-icons/im";
+import { AiFillLock } from "react-icons/ai";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   theme?: "outline" | "fill";
@@ -13,6 +14,7 @@ const Button: FC<Props> = ({
   loading,
   children,
   className,
+  disabled,
   ...rest
 }) => {
   const themeClasses =
@@ -23,6 +25,7 @@ const Button: FC<Props> = ({
     <>
       <button
         {...rest}
+        disabled={disabled}
         className={
           "rounded-full py-2 px-3 uppercase text-xs font-bold cursor-pointer tracking-wider border border-secondary-200 " +
           themeClasses +
@@ -30,10 +33,12 @@ const Button: FC<Props> = ({
         }
       >
         {/* {children}  */}
-        {!loading ? (
+        {!loading && !disabled ? (
           children
-        ) : (
+        ) : loading ? (
           <ImSpinner8 className="w-4 h-4 mx-auto animate-spin" />
+        ) : (
+          <AiFillLock className="w-5 h-5 mx-auto " />
         )}
       </button>
     </>

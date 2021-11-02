@@ -6,22 +6,16 @@ import { AiFillTags } from "react-icons/ai";
 
 interface Props {
   children: string;
+  questionID: string;
   tag: string;
 }
 
-const QuestionCard: FC<Props> = ({ children, tag }) => {
+const QuestionCard: FC<Props> = ({ children, tag, questionID }) => {
   const history = useHistory();
   return (
     <div className="relative w-2/5 mx-auto mt-4 bg-gray-100 shadow-lg">
       <div className="px-5 pt-3">
-        <h2
-          onClick={() => {
-            history.push("/question");
-          }}
-          className="text-lg font-semibold cursor-pointer hover:underline"
-        >
-          {children}
-        </h2>
+        <h2 className="text-lg font-semibold">{children}</h2>
         <button>
           <IoMdClose className="absolute w-6 h-6 rounded-full cursor-pointer right-2 top-2 text-secondary-400 hover:bg-gray-300" />
         </button>
@@ -32,7 +26,13 @@ const QuestionCard: FC<Props> = ({ children, tag }) => {
 
         <div className="mt-4 border-b-2 border-secondary-400"></div>
         <div className="flex items-center justify-between py-2 mx-6">
-          <Button>Answer</Button>
+          <Button
+            onClick={() => {
+              history.push(`/question/${questionID}`);
+            }}
+          >
+            Answer
+          </Button>
           <button>
             <IoMdShareAlt className="w-8 h-8 rounded-full text-secondary-400 hover:bg-gray-300" />
           </button>

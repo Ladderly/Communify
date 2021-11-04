@@ -23,9 +23,9 @@ const Navbar: FC<Props> = (props) => {
   const handleSignOut = () => {
     // history.push("/login");
     signOut();
+    sessionStorage.clear();
     window.location.href = "/login";
   };
-  console.log(loading);
   return (
     <>
       <nav className="sticky top-0 z-10 flex items-center justify-between h-16 px-6 bg-white lg:space-x-12 md:space-x-10 md:mx-16 sm:mx-4 sm:space-x-0">

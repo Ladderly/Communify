@@ -17,10 +17,10 @@ const QACard: FC<Props> = ({ title, resolver, answer, imgSrc }) => {
   const history = useHistory();
   const [readMore, setReadMore] = useState(false);
   return (
-    <div className="relative w-2/5 mx-auto bg-gray-100 shadow-lg">
+    <div className="relative bg-gray-100 shadow-lg">
       <div className="p-5">
         <button>
-          <IoMdClose className="absolute w-6 h-6 rounded-full cursor-pointer right-2 top-2 text-secondary-400 hover:bg-gray-300" />
+          <IoMdClose className="absolute w-6 h-6 cursor-pointer right-2 top-2 text-secondary-400" />
         </button>
         <div className="flex items-center space-x-4">
           <Avatar
@@ -80,7 +80,7 @@ const QACard: FC<Props> = ({ title, resolver, answer, imgSrc }) => {
           </div>
           <div>
             <button>
-              <IoMdShareAlt className="w-8 h-8 rounded-full text-secondary-400 hover:bg-gray-300" />
+              <IoMdShareAlt className="w-8 h-8 text-secondary-400" />
             </button>
           </div>
         </div>

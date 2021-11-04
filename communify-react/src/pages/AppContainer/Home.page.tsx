@@ -7,7 +7,7 @@ interface Props {}
 const Home: FC<Props> = (props) => {
   return (
     <div>
-      <div className="flex flex-col mt-10 space-y-4">
+      <div className="flex flex-col w-full px-2 mt-10 space-y-4 sm:w-2/5 sm:mx-auto sm:px-0">
         <QACard
           title="Ayaan Bhai kaise kar lete ho?"
           resolver="Shashank Jain"

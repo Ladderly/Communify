@@ -76,7 +76,7 @@ const AddQuestionModal: FC<Props> = (props) => {
       });
   };
   return (
-    <div className="fixed bottom-10 right-1/3">
+    <div className="fixed bottom-10 sm:right-1/3 right-10">
       <button className="p-2 rounded-full bg-secondary-200" onClick={openModal}>
         <GoPlus className="w-8 h-8 text-white" />
       </button>

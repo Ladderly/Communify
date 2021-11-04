@@ -13,9 +13,9 @@ import { IoMdShareAlt } from "react-icons/io";
 import Button from "../../components/Button";
 import { FaPenAlt } from "react-icons/fa";
 import { BsFillImageFill } from "react-icons/bs";
-import { firestore, storage } from "../../firebase";
 import { useParams } from "react-router-dom";
 import firebase from "firebase/compat";
+import { firestore, storage } from "../../firebase";
 import { AuthContext } from "../../context/AuthContext";
 import AnswerCard from "../../components/AnswerCard";
 
@@ -93,8 +93,8 @@ const Question: React.FC<Props> = (props) => {
     image ? uploadImage(image) : uploadAnswer();
   };
   return (
-    <div className="flex flex-col mt-10 space-y-4">
-      <div className="relative flex flex-col w-2/5 mx-auto bg-gray-100 shadow-lg">
+    <div className="flex flex-col w-full px-2 mt-10 space-y-4 sm:px-0 sm:w-2/5 sm:mx-auto">
+      <div className="relative flex flex-col bg-gray-100 shadow-lg">
         <h1 className="items-center p-5 text-xl font-semibold h-15">
           Ayaan Bhai kaise kar lete ho?
         </h1>
@@ -153,7 +153,7 @@ const Question: React.FC<Props> = (props) => {
             <p className="font-semibold">32 ANSWERS</p>
             <div>
               <button>
-                <IoMdShareAlt className="w-8 h-8 rounded-full text-secondary-400 hover:bg-gray-300" />
+                <IoMdShareAlt className="w-8 h-8 text-secondary-400" />
               </button>
             </div>
           </div>
@@ -165,6 +165,7 @@ const Question: React.FC<Props> = (props) => {
             key={index}
             resolver={answer.userName}
             answer={answer.answerText}
+            imgSrc={answer.imageLink}
           ></AnswerCard>
         );
       })}

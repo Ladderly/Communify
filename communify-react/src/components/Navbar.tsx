@@ -10,6 +10,7 @@ import Button from "./Button";
 import { auth } from "../firebase";
 import { useHistory } from "react-router";
 import { AuthContext } from "../context/AuthContext";
+import Avatar from "./Avatar";
 interface Props {}
 
 const Navbar: FC<Props> = (props) => {
@@ -43,7 +44,11 @@ const Navbar: FC<Props> = (props) => {
             </button>
             <button className="w-7 h-7">
               <BiBookAdd
-                onClick={() => history.push("/questionlist")}
+                onClick={() => {
+                  user
+                    ? history.push("/questionlist")
+                    : (window.location.href = "/login");
+                }}
                 className="w-7 h-7"
               />
             </button>
@@ -53,7 +58,7 @@ const Navbar: FC<Props> = (props) => {
             <FiSearch className="absolute right-0 w-5 h-5 mr-2 top-3 text-secondary-400"></FiSearch>
             <input
               type="text"
-              className="justify-between w-full p-3 mx-4 border-2 border-transparent border-solid rounded-full focus:outline-none hover:border-2 focus:ring-2 focus:ring-secondary-200 focus:border-transparent"
+              className="justify-between w-full p-3 mx-4 border-2 border-transparent border-solid rounded-full focus:outline-none focus:border-secondary-300"
               placeholder="What are you looking for?"
             />
           </div>
@@ -66,16 +71,23 @@ const Navbar: FC<Props> = (props) => {
               <Button onClick={() => history.push("/signup")}>Sign up</Button>
             </div>
           ) : (
-            <Button
-              loading={loading}
-              className="w-28"
-              onClick={() => {
-                setLoading(true);
-                handleSignOut();
-              }}
-            >
-              Sign Out
-            </Button>
+            <div className="flex items-center space-x-2 lg:space-x-10 sm:justify-between">
+              <Avatar
+                src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+                size="small"
+                alt="profile-pic"
+              />
+              <Button
+                loading={loading}
+                className="w-28"
+                onClick={() => {
+                  setLoading(true);
+                  handleSignOut();
+                }}
+              >
+                Sign Out
+              </Button>
+            </div>
           )}
         </div>
 

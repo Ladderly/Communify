@@ -26,6 +26,8 @@ const Question: React.FC<Props> = (props) => {
   const user = useContext(AuthContext);
   const { questionID } = useParams<any>();
   const [image, setImage] = useState<any>(null);
+  const [numOfAnswers, setNumOfAnswers] = useState<number>();
+  const [question, setQuestion] = useState<string>("");
   const [answer, setAnswer] = useState<string>("");
   const [answers, setAnswers] = useState<firebase.firestore.DocumentData[]>([]);
   useEffect(() => {
@@ -33,6 +35,7 @@ const Question: React.FC<Props> = (props) => {
       try {
         await firestore
           .collection("answers")
+          .where("qid", "==", questionID)
           .get()
           .then((answerList) => {
             answerList.docs.forEach((answer) => {
@@ -44,7 +47,22 @@ const Question: React.FC<Props> = (props) => {
         console.log(err);
       }
     };
-    fetchAnswers();
+    const getQuestionData = async () => {
+      try {
+        await firestore
+          .collection("questions")
+          .where("qid", "==", questionID)
+          .get()
+          .then((questionlist) => {
+            setQuestion(questionlist.docs[0].data().questionText);
+            setNumOfAnswers(questionlist.docs[0].data().numberOfAnswers);
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getQuestionData();
+    fetchAnswers(); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const handleAnswerChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAnswer(e.target.value);
@@ -67,8 +85,21 @@ const Question: React.FC<Props> = (props) => {
         res.update({
           aid: res.id,
         });
-        window.location.reload();
-        setAnswer("");
+      })
+      .then(() => {
+        firestore
+          .collection("questions")
+          .doc(questionID)
+          .update({
+            numberOfAnswers: firebase.firestore.FieldValue.increment(1),
+          })
+          .then(() => {
+            window.location.reload();
+            setAnswer("");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       });
   };
   const uploadImage = (file: any) => {
@@ -96,7 +127,7 @@ const Question: React.FC<Props> = (props) => {
     <div className="flex flex-col w-full px-2 mt-10 space-y-4 sm:px-0 sm:w-2/5 sm:mx-auto">
       <div className="relative flex flex-col bg-gray-100 shadow-lg">
         <h1 className="items-center p-5 text-xl font-semibold h-15">
-          Ayaan Bhai kaise kar lete ho?
+          {question}
         </h1>
         <input
           type="file"
@@ -150,7 +181,7 @@ const Question: React.FC<Props> = (props) => {
         <div className="mt-4 border-b-2 border-secondary-400"></div>
         <div className="py-2 mx-5">
           <div className="flex items-center justify-between">
-            <p className="font-semibold">32 ANSWERS</p>
+            <p className="font-semibold">{numOfAnswers} ANSWERS</p>
             <div>
               <button>
                 <IoMdShareAlt className="w-8 h-8 text-secondary-400" />

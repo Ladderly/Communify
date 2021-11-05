@@ -18,7 +18,7 @@ const QACard: FC<Props> = ({ title, resolver, answer, imgSrc }) => {
   const [readMore, setReadMore] = useState(false);
   return (
     <div className="relative bg-gray-100 shadow-lg">
-      <div className="p-5">
+      <div className="p-5 pb-0">
         <button>
           <IoMdClose className="absolute w-6 h-6 cursor-pointer right-2 top-2 text-secondary-400" />
         </button>
@@ -39,7 +39,7 @@ const QACard: FC<Props> = ({ title, resolver, answer, imgSrc }) => {
           {title}
         </h2>
         {!readMore && (
-          <div className="overflow-hidden max-h-16">
+          <div className="overflow-hidden max-h-24">
             <p>{answer}</p>
           </div>
         )}
@@ -48,17 +48,17 @@ const QACard: FC<Props> = ({ title, resolver, answer, imgSrc }) => {
             <p>{answer}</p>
           </div>
         )}
+        {!readMore && (
+          <div>
+            <button
+              onClick={() => setReadMore(!readMore)}
+              className="block mx-auto"
+            >
+              <FiArrowDown className="w-6 h-6  text-secondary-400 animate-bounce" />
+            </button>
+          </div>
+        )}
       </div>
-      {!readMore && (
-        <div>
-          <button
-            onClick={() => setReadMore(!readMore)}
-            className="block mx-auto"
-          >
-            <FiArrowDown className="w-6 h-6 text-secondary-400 animate-bounce" />
-          </button>
-        </div>
-      )}
       {imgSrc && (
         <img
           className="object-fill w-full mt-4 h-72"

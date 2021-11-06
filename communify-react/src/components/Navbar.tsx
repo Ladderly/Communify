@@ -72,11 +72,13 @@ const Navbar: FC<Props> = (props) => {
             </div>
           ) : (
             <div className="flex items-center space-x-2 lg:space-x-10 sm:justify-between">
-              <Avatar
-                src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-                size="small"
-                alt="profile-pic"
-              />
+              <button onClick={() => history.push("/profile")}>
+                <Avatar
+                  src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+                  size="small"
+                  alt="profile-pic"
+                />
+              </button>
               <Button
                 loading={loading}
                 className="w-28"

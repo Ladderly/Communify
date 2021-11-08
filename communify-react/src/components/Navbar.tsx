@@ -11,6 +11,10 @@ import { auth } from "../firebase";
 import { useHistory } from "react-router";
 import { AuthContext } from "../context/AuthContext";
 import Avatar from "./Avatar";
+import { AiFillHome } from "react-icons/ai";
+import { RiFileListFill } from "react-icons/ri";
+import { GoSignOut } from "react-icons/go";
+import { BiLogIn } from "react-icons/bi";
 interface Props {}
 
 const Navbar: FC<Props> = (props) => {
@@ -45,9 +49,7 @@ const Navbar: FC<Props> = (props) => {
             <button className="w-7 h-7">
               <BiBookAdd
                 onClick={() => {
-                  user
-                    ? history.push("/questionlist")
-                    : (window.location.href = "/login");
+                  user ? history.push("/questionlist") : history.push("/login");
                 }}
                 className="w-7 h-7"
               />
@@ -123,17 +125,66 @@ const Navbar: FC<Props> = (props) => {
             leaveFrom="translate-x-0"
             leaveTo="translate-x-full"
           >
-            <div className="fixed bottom-0 right-0 flex flex-col w-40 h-full pl-2 space-y-4 transform bg-gray-200 border-2 sm:hidden top-16">
-              <button className="font-bold text-center w-7">Home</button>
-              <button className="font-bold text-center w-7">Topics</button>
-              <button className="font-bold text-center w-7">Login</button>
-              <button className="font-bold text-center w-7">SignUp</button>
-              <button
-                onClick={() => handleSignOut()}
-                className="font-bold text-center w-7"
-              >
-                SignOut
-              </button>
+            <div className="fixed bottom-0 right-0 flex flex-col w-48 h-full pt-4 pl-6 space-y-6 transform border-2 bg-gray-50 sm:hidden top-16">
+              <div className="flex space-x-2">
+                <AiFillHome className="w-6 h-6 text-secondary-400" />
+                <button
+                  onClick={() => {
+                    history.push("/home");
+                    setIsMenuOpen(false);
+                  }}
+                  className="font-bold text-center w-7 text-secondary-400"
+                >
+                  Home
+                </button>
+              </div>
+              <div className="flex space-x-2">
+                <RiFileListFill className="w-6 h-6 text-secondary-400" />
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    user
+                      ? history.push("/questionlist")
+                      : (window.location.href = "/login");
+                  }}
+                  className="font-bold text-center w-7 text-secondary-400"
+                >
+                  QuestionList
+                </button>
+              </div>
+              {!user && (
+                <>
+                  <div className="flex space-x-2">
+                    <BiLogIn className="w-6 h-6 text-secondary-400" />
+                    <button
+                      onClick={() => history.push("/login")}
+                      className="font-bold text-center w-7 text-secondary-400"
+                    >
+                      Login
+                    </button>
+                  </div>
+                  <div className="flex space-x-2">
+                    <BiLogIn className="w-6 h-6 text-secondary-400" />
+                    <button
+                      onClick={() => history.push("/signup")}
+                      className="font-bold text-center w-7 text-secondary-400"
+                    >
+                      SignUp
+                    </button>
+                  </div>
+                </>
+              )}
+              {user && (
+                <div className="flex space-x-2">
+                  <GoSignOut className="w-6 h-6 text-secondary-400" />
+                  <button
+                    onClick={() => handleSignOut()}
+                    className="font-bold text-center w-7 text-secondary-400"
+                  >
+                    SignOut
+                  </button>
+                </div>
+              )}
             </div>
           </Transition.Child>
         </Dialog>

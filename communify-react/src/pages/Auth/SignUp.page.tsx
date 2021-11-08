@@ -97,7 +97,7 @@ const SignUp: FC<Props> = (props) => {
     <div className="relative w-full min-h-screen overflow-auto bg-cover bg-login">
       <div className="absolute w-5/6 h-auto px-4 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg sm:px-0 sm:w-3/5 top-1/2 left-1/2">
         <h1 className="my-4 font-serif text-4xl font-semibold text-center sm:text-5xl text-secondary-400">
-          Ladderly
+          Communify
         </h1>
         <p className="my-6 text-sm font-semibold text-center text-secondary-300">
           Join the community to share knowledge and better your skills

@@ -11,23 +11,26 @@ import { AuthContext } from "../../context/AuthContext";
 import { Tab } from "@headlessui/react";
 import firebase from "firebase/compat/app";
 import { firestore } from "../../firebase";
-import QuestionCard from "../../components/QuestionCard";
-import AnswerCard from "../../components/AnswerCard";
 import { FaEdit } from "react-icons/fa";
+import ProfileQuestionCard from "../../components/ProfileQuestionCard";
+import ProfileAnswerCard from "../../components/ProfileAnswerCard";
 
 interface Props {}
 
 const Profile: FC<Props> = (props) => {
   const user = useContext(AuthContext);
+  if (!sessionStorage.getItem("user")) {
+    sessionStorage.setItem("user", user!.uid);
+  }
   const [questionData, setQuestionData] = useState<
     firebase.firestore.DocumentData[]
   >([]);
   const [answers, setAnswers] = useState<firebase.firestore.DocumentData[]>([]);
   useEffect(() => {
-    const fetchList = async () => {
+    const fetchQuestions = async () => {
       await firestore
         .collection("questions")
-        .where("uid", "!=", sessionStorage.getItem("user")!)
+        .where("uid", "==", sessionStorage.getItem("user")!)
         .get()
         .then((questionList) => {
           questionList.docs.forEach((question) => {
@@ -54,8 +57,8 @@ const Profile: FC<Props> = (props) => {
         console.log(err);
       }
     };
+    fetchQuestions();
     fetchAnswers();
-    fetchList();
   }, []);
   return (
     <div className="w-full rounded-md shadow-md sm:w-3/5 sm:mx-auto bg-gray-50">
@@ -78,8 +81,8 @@ const Profile: FC<Props> = (props) => {
                 <div
                   className={
                     selected
-                      ? "text-secondary-400 border-b-2 border-secondary-400 font-bold cursor-pointer"
-                      : " text-black font-bold cursor-pointer"
+                      ? "text-secondary-400 border-b-2 border-secondary-400 font-bold cursor-pointer text-lg"
+                      : " text-black font-bold cursor-pointer text-lg"
                   }
                 >
                   Questions
@@ -91,8 +94,8 @@ const Profile: FC<Props> = (props) => {
                 <div
                   className={
                     selected
-                      ? "text-secondary-400 border-b-2 border-secondary-400 font-bold cursor-pointer"
-                      : " text-black font-bold cursor-pointer"
+                      ? "text-secondary-400 border-b-2 border-secondary-400 font-bold cursor-pointer text-lg"
+                      : " text-black font-bold cursor-pointer text-lg"
                   }
                 >
                   Answers
@@ -105,14 +108,13 @@ const Profile: FC<Props> = (props) => {
               {questionData.length !== 0 ? (
                 questionData.map((question) => {
                   return (
-                    <QuestionCard
-                      deleted={true}
+                    <ProfileQuestionCard
                       questionID={question.qid}
                       tag={question.tag}
                       key={question.qid}
                     >
                       {question.questionText}
-                    </QuestionCard>
+                    </ProfileQuestionCard>
                   );
                 })
               ) : (
@@ -125,12 +127,13 @@ const Profile: FC<Props> = (props) => {
               {answers.length !== 0 ? (
                 answers.map((answer, index) => {
                   return (
-                    <AnswerCard
+                    <ProfileAnswerCard
                       key={index}
-                      resolver={answer.userName}
                       answer={answer.answerText}
                       imgSrc={answer.imageLink}
-                    ></AnswerCard>
+                      created={answer.created}
+                      questionID={answer.qid}
+                    ></ProfileAnswerCard>
                   );
                 })
               ) : (

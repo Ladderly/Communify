@@ -4,7 +4,7 @@ import { ImSpinner8 } from "react-icons/im";
 import { AiFillLock } from "react-icons/ai";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  theme?: "outline" | "fill";
+  theme?: "outline" | "fill" | "warning";
   children: string;
   loading?: boolean;
 }
@@ -19,20 +19,21 @@ const Button: FC<Props> = ({
 }) => {
   const themeClasses =
     theme === "fill"
-      ? "bg-secondary-200 text-white hover:bg-secondary-300 "
-      : "hover:text-white hover:bg-secondary-200 text-secondary-200 ";
+      ? "bg-secondary-200 text-white hover:bg-secondary-300 border border-secondary-200 "
+      : theme === "outline"
+      ? "hover:text-white hover:bg-secondary-200 text-secondary-200 border border-secondary-200 "
+      : "bg-red-500 text-white hover:bg-red-600 border border-red-500 ";
   return (
     <>
       <button
         {...rest}
         disabled={disabled}
         className={
-          "rounded-full py-2 px-3 uppercase text-xs font-bold cursor-pointer tracking-wider border border-secondary-200 " +
+          "rounded-full py-2 px-3 uppercase text-xs font-bold cursor-pointer tracking-wider " +
           themeClasses +
           className
         }
       >
-        {/* {children}  */}
         {!loading && !disabled ? (
           children
         ) : loading ? (

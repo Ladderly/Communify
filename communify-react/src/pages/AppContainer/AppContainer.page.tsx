@@ -16,7 +16,7 @@ const AppContainer: FC<Props> = (props) => {
         <Route path="/home" exact>
           <HomePage />
         </Route>
-        <Route path="/profile" exact>
+        <Route path="/profile/:userID" exact>
           <ProfilePage />
         </Route>
         <Route path="/question/:questionID" exact>

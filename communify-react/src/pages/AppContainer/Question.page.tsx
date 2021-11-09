@@ -126,7 +126,7 @@ const Question: React.FC<Props> = (props) => {
     image ? uploadImage(image) : uploadAnswer();
   };
   return (
-    <div className="flex flex-col w-full px-2 mt-10 space-y-4 sm:px-0 sm:w-2/5 sm:mx-auto">
+    <div className="flex flex-col w-full px-2 mt-6 space-y-4 sm:px-0 sm:w-2/5 sm:mx-auto">
       <div className="relative flex flex-col bg-gray-100 shadow-lg">
         {alertVisibility && !user && (
           <Alert

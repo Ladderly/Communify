@@ -1,5 +1,5 @@
 import { Disclosure } from "@headlessui/react";
-import { TextField } from "@mui/material";
+import { Alert, TextField } from "@mui/material";
 import {
   ChangeEvent,
   Fragment,
@@ -30,6 +30,7 @@ const Question: React.FC<Props> = (props) => {
   const [question, setQuestion] = useState<string>("");
   const [answer, setAnswer] = useState<string>("");
   const [answers, setAnswers] = useState<firebase.firestore.DocumentData[]>([]);
+  const [alertVisibility, setAlertVisibility] = useState<boolean>(false);
   useEffect(() => {
     const fetchAnswers = async () => {
       try {
@@ -62,7 +63,7 @@ const Question: React.FC<Props> = (props) => {
       }
     };
     getQuestionData();
-    fetchAnswers(); // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchAnswers().then(() => setAlertVisibility(true)); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const handleAnswerChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAnswer(e.target.value);
@@ -79,6 +80,7 @@ const Question: React.FC<Props> = (props) => {
         created: firebase.firestore.Timestamp.now(),
         uid: user?.uid,
         userName: user?.displayName,
+        questionText: question,
         imageLink: url,
       })
       .then((res) => {
@@ -126,6 +128,15 @@ const Question: React.FC<Props> = (props) => {
   return (
     <div className="flex flex-col w-full px-2 mt-10 space-y-4 sm:px-0 sm:w-2/5 sm:mx-auto">
       <div className="relative flex flex-col bg-gray-100 shadow-lg">
+        {alertVisibility && !user && (
+          <Alert
+            onClose={() => setAlertVisibility(false)}
+            severity="warning"
+            className="absolute left-0 right-0 mx-auto text-center transition duration-1000 ease-in-out -top-12 sm:-top-8 w-80 sm:w-96"
+          >
+            Kindly Sign In to Answer Questions!
+          </Alert>
+        )}
         <h1 className="items-center p-5 text-xl font-semibold h-15">
           {question}
         </h1>
@@ -165,7 +176,7 @@ const Question: React.FC<Props> = (props) => {
                   </button>
                 </div>
                 <Button
-                  disabled={answer ? false : true}
+                  disabled={answer && user ? false : true}
                   onClick={() => {
                     close();
                     addAnswer();

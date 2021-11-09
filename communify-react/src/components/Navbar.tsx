@@ -26,10 +26,9 @@ const Navbar: FC<Props> = (props) => {
     return auth.signOut();
   };
   const handleSignOut = () => {
-    // history.push("/login");
     signOut();
     sessionStorage.clear();
-    window.location.href = "/login";
+    window.location.reload();
   };
   return (
     <>
@@ -178,7 +177,10 @@ const Navbar: FC<Props> = (props) => {
                 <div className="flex space-x-2">
                   <GoSignOut className="w-6 h-6 text-secondary-400" />
                   <button
-                    onClick={() => handleSignOut()}
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      handleSignOut();
+                    }}
                     className="font-bold text-center w-7 text-secondary-400"
                   >
                     SignOut

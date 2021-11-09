@@ -36,12 +36,12 @@ const AnswerCard: FC<Props> = ({ resolver, answer, imgSrc }) => {
           <IoMdClose className="absolute w-6 h-6 cursor-pointer right-2 top-2 text-secondary-400" />
         </button>
         {!readMore && (
-          <div className="overflow-hidden max-h-16">
+          <div className="overflow-hidden whitespace-pre-wrap max-h-16">
             <p>{answer}</p>
           </div>
         )}
         {readMore && (
-          <div>
+          <div className="whitespace-pre-wrap">
             <p>{answer}</p>
           </div>
         )}

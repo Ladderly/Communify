@@ -39,7 +39,8 @@ const Home: FC<Props> = (props) => {
               resolver={answer.userName}
               answer={answer.answerText}
               imgSrc={answer.imageLink}
-              id={answer.qid}
+              questionID={answer.qid}
+              userID={answer.uid}
             ></QACard>
           );
         })}

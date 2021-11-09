@@ -8,7 +8,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <ScrollToTop/>
+        <ScrollToTop />
         <Switch>
           <Route path="/" exact>
             <Redirect to="/home" />
@@ -19,7 +19,7 @@ function App() {
           <Route
             path={[
               "/home",
-              "/profile",
+              "/profile/:userID",
               "/question/:questionID",
               "/questionlist",
             ]}

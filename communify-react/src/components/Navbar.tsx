@@ -15,6 +15,7 @@ import { AiFillHome } from "react-icons/ai";
 import { RiFileListFill } from "react-icons/ri";
 import { GoSignOut } from "react-icons/go";
 import { BiLogIn } from "react-icons/bi";
+import { CgProfile } from "react-icons/cg";
 interface Props {}
 
 const Navbar: FC<Props> = (props) => {
@@ -28,6 +29,7 @@ const Navbar: FC<Props> = (props) => {
   const handleSignOut = () => {
     signOut();
     sessionStorage.clear();
+    setLoading(false);
     window.location.reload();
   };
   return (
@@ -73,7 +75,7 @@ const Navbar: FC<Props> = (props) => {
             </div>
           ) : (
             <div className="flex items-center space-x-2 lg:space-x-10 sm:justify-between">
-              <button onClick={() => history.push("/profile")}>
+              <button onClick={() => history.push(`/profile/${user!.uid}`)}>
                 <Avatar
                   src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
                   size="small"
@@ -137,6 +139,20 @@ const Navbar: FC<Props> = (props) => {
                   Home
                 </button>
               </div>
+              {user && (
+                <div className="flex space-x-2">
+                  <CgProfile className="w-6 h-6 text-secondary-400" />
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      history.push(`/profile/${user!.uid}`);
+                    }}
+                    className="font-bold text-center w-7 text-secondary-400"
+                  >
+                    Profile
+                  </button>
+                </div>
+              )}
               <div className="flex space-x-2">
                 <RiFileListFill className="w-6 h-6 text-secondary-400" />
                 <button

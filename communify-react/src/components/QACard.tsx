@@ -18,7 +18,8 @@ interface Props {
   resolver: string;
   answer: string;
   imgSrc?: string;
-  id: string;
+  questionID: string;
+  userID: string;
 }
 
 const QACard: FC<Props> = ({
@@ -27,7 +28,8 @@ const QACard: FC<Props> = ({
   answer,
   imgSrc,
   profile,
-  id,
+  questionID,
+  userID,
 }) => {
   const history = useHistory();
   const [readMore, setReadMore] = useState(false);
@@ -51,11 +53,16 @@ const QACard: FC<Props> = ({
             </button>
             <div className="flex items-center space-x-4">
               <Avatar src={profile} alt="profile-pic" size="small" />
-              <span className="font-semibold text-gray-700">{resolver}</span>
+              <span
+                onClick={() => history.push(`/profile/${userID}`)}
+                className="font-semibold text-gray-700 cursor-pointer"
+              >
+                {resolver}
+              </span>
             </div>
             <h2
               onClick={() => {
-                history.push(`/question/${id}`);
+                history.push(`/question/${questionID}`);
               }}
               className="my-4 text-lg font-semibold cursor-pointer hover:underline"
             >
@@ -84,7 +91,7 @@ const QACard: FC<Props> = ({
           </div>
           {imgSrc && (
             <img
-              className="object-fill w-full mt-4 h-72"
+              className="object-contain w-full h-full mt-4"
               src={imgSrc}
               alt="answer-context"
             />

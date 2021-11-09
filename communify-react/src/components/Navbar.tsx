@@ -32,7 +32,7 @@ const Navbar: FC<Props> = (props) => {
   };
   return (
     <>
-      <nav className="sticky top-0 z-10 flex items-center justify-between h-16 px-6 bg-white lg:space-x-12 md:space-x-10 md:mx-16 sm:mx-4 sm:space-x-0">
+      <nav className="sticky top-0 z-10 flex items-center justify-between h-16 px-6 bg-white border-b-2 border-gray-200 shadow-sm lg:space-x-12 md:space-x-10 md:px-16 sm:px-4 sm:space-x-0">
         <div className="flex">
           <SiQuora className="w-12 h-10" />
         </div>

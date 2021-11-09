@@ -1,27 +1,18 @@
-import React, {
-  FC,
-  Fragment,
-  memo,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { FC, Fragment, memo, useEffect, useState } from "react";
 import Avatar from "../../components/Avatar";
-import { AuthContext } from "../../context/AuthContext";
 import { Tab } from "@headlessui/react";
 import firebase from "firebase/compat/app";
 import { firestore } from "../../firebase";
 import { FaEdit } from "react-icons/fa";
 import ProfileQuestionCard from "../../components/ProfileQuestionCard";
 import ProfileAnswerCard from "../../components/ProfileAnswerCard";
+import { useParams } from "react-router-dom";
 
 interface Props {}
 
 const Profile: FC<Props> = (props) => {
-  const user = useContext(AuthContext);
-  if (!sessionStorage.getItem("user")) {
-    sessionStorage.setItem("user", user!.uid);
-  }
+  const { userID } = useParams<any>();
+  const [userName, setUserName] = useState<string>();
   const [questionData, setQuestionData] = useState<
     firebase.firestore.DocumentData[]
   >([]);
@@ -30,7 +21,7 @@ const Profile: FC<Props> = (props) => {
     const fetchQuestions = async () => {
       await firestore
         .collection("questions")
-        .where("uid", "==", sessionStorage.getItem("user")!)
+        .where("uid", "==", userID)
         .get()
         .then((questionList) => {
           questionList.docs.forEach((question) => {
@@ -41,15 +32,25 @@ const Profile: FC<Props> = (props) => {
           console.log(error);
         });
     };
+    const fetchUser = async () => {
+      try {
+        await firestore
+          .collection("users")
+          .where("uid", "==", userID)
+          .get()
+          .then((userList) => setUserName(userList.docs[0].data().displayName));
+      } catch (err) {
+        console.log(err);
+      }
+    };
     const fetchAnswers = async () => {
       try {
         await firestore
           .collection("answers")
-          .where("uid", "==", sessionStorage.getItem("user")!)
+          .where("uid", "==", userID)
           .get()
           .then((answerList) => {
             answerList.docs.forEach((answer) => {
-              console.log("run");
               setAnswers((prev) => [...prev, answer.data()]);
             });
           });
@@ -57,8 +58,9 @@ const Profile: FC<Props> = (props) => {
         console.log(err);
       }
     };
+    fetchUser();
     fetchQuestions();
-    fetchAnswers();
+    fetchAnswers(); //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div className="w-full rounded-md shadow-md sm:w-3/5 sm:mx-auto bg-gray-50">
@@ -72,7 +74,7 @@ const Profile: FC<Props> = (props) => {
             />
             <FaEdit className="absolute p-1 border-2 rounded-full cursor-pointer w-7 h-7 bottom-1 right-2 border-secondary-400 text-secondary-400" />
           </div>
-          <p className="text-xl font-bold sm:text-4xl ">{user?.displayName}</p>
+          <p className="text-xl font-bold sm:text-4xl ">{userName}</p>
         </div>
         <Tab.Group>
           <Tab.List className="flex justify-around w-full mt-10 mb-2">
@@ -133,6 +135,8 @@ const Profile: FC<Props> = (props) => {
                       imgSrc={answer.imageLink}
                       created={answer.created}
                       questionID={answer.qid}
+                      answerID={answer.aid}
+                      fileName={answer.fileName}
                     ></ProfileAnswerCard>
                   );
                 })

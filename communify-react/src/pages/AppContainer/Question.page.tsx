@@ -27,6 +27,7 @@ const Question: React.FC<Props> = (props) => {
   const { questionID } = useParams<any>();
   const [image, setImage] = useState<any>(null);
   const [numOfAnswers, setNumOfAnswers] = useState<number>();
+  const [loading, setLoading] = useState<boolean>(false);
   const [question, setQuestion] = useState<string>("");
   const [answer, setAnswer] = useState<string>("");
   const [answers, setAnswers] = useState<firebase.firestore.DocumentData[]>([]);
@@ -71,7 +72,7 @@ const Question: React.FC<Props> = (props) => {
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     setImage(e.target.files![0]);
   };
-  const uploadAnswer = async (url: string = "") => {
+  const uploadAnswer = async (url: string = "", fileName: string = "") => {
     await firestore
       .collection("answers")
       .add({
@@ -82,6 +83,7 @@ const Question: React.FC<Props> = (props) => {
         userName: user?.displayName,
         questionText: question,
         imageLink: url,
+        fileName: fileName,
       })
       .then((res) => {
         res.update({
@@ -96,6 +98,7 @@ const Question: React.FC<Props> = (props) => {
             numberOfAnswers: firebase.firestore.FieldValue.increment(1),
           })
           .then(() => {
+            setLoading(false);
             window.location.reload();
             setAnswer("");
           })
@@ -116,13 +119,14 @@ const Question: React.FC<Props> = (props) => {
           .child(file.name)
           .getDownloadURL()
           .then((url) => {
-            uploadAnswer(url);
+            uploadAnswer(url, file.name);
             console.log(url);
           });
       }
     );
   };
   const addAnswer = () => {
+    setLoading(true);
     image ? uploadImage(image) : uploadAnswer();
   };
   return (
@@ -176,9 +180,9 @@ const Question: React.FC<Props> = (props) => {
                   </button>
                 </div>
                 <Button
+                  loading={loading}
                   disabled={answer && user ? false : true}
                   onClick={() => {
-                    close();
                     addAnswer();
                   }}
                   className="block w-32 mt-4 mr-auto"

@@ -41,6 +41,7 @@ const AddQuestionModal: FC<Props> = (props) => {
   };
   const user = useContext(AuthContext);
   const [tag, setTag] = useState<string | null>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [question, setQuestion] = useState<string | null>("");
   const [toggle, setToggle] = useState<boolean>(false);
   const handleQuestionChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -57,9 +58,7 @@ const AddQuestionModal: FC<Props> = (props) => {
     setTag(e.target.value);
   };
   const addNewQuestion = () => {
-    // console.log(question);
-    // console.log(tag);
-    // console.log(input);
+    setLoading(true);
     firestore
       .collection("questions")
       .add({
@@ -67,12 +66,15 @@ const AddQuestionModal: FC<Props> = (props) => {
         uid: user?.uid,
         created: firebase.firestore.Timestamp.now(),
         tag: tag,
+        numberOfAnswers: 0,
       })
       .then((ref) => {
         ref.update({ qid: ref.id });
         setQuestion("");
-        setToggle(false);
         setTag("");
+        setLoading(false);
+        setToggle(false);
+        closeModal();
       });
   };
   return (
@@ -188,11 +190,10 @@ const AddQuestionModal: FC<Props> = (props) => {
                     Cancel
                   </Button>
                   <Button
+                    loading={loading}
                     className="w-40"
                     disabled={question && tag ? false : true}
                     onClick={() => {
-                      closeModal();
-                      setToggle(false);
                       if (user) {
                         addNewQuestion();
                       } else {

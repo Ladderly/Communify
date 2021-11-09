@@ -188,6 +188,8 @@ const AddQuestionModal: FC<Props> = (props) => {
                     Cancel
                   </Button>
                   <Button
+                    className="w-40"
+                    disabled={question && tag ? false : true}
                     onClick={() => {
                       closeModal();
                       setToggle(false);

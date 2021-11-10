@@ -30,7 +30,7 @@ const Navbar: FC<Props> = (props) => {
     signOut();
     sessionStorage.clear();
     setLoading(false);
-    window.location.reload();
+    window.location.href = "/home";
   };
   return (
     <>

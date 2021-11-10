@@ -3,14 +3,17 @@ import AddQuestionModal from "../../components/AddQuestionModal";
 import QACard from "../../components/QACard";
 import firebase from "firebase/compat/app";
 import { firestore } from "../../firebase";
+import SkeletonLoaderList from "../../components/SkeletonLoaderList";
 
 interface Props {}
 
 const Home: FC<Props> = (props) => {
   const [answers, setAnswers] = useState<firebase.firestore.DocumentData[]>([]);
+  const [loadingList, setLoadingList] = useState<boolean>(false);
   useEffect(() => {
     const fetchAnswers = async () => {
       try {
+        setLoadingList(true);
         await firestore
           .collection("answers")
           .get()
@@ -24,29 +27,35 @@ const Home: FC<Props> = (props) => {
         console.log(err);
       }
     };
-    fetchAnswers();
+    fetchAnswers().then(() => setLoadingList(false));
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <div>
-      <div className="flex flex-col w-full px-2 mt-6 space-y-4 sm:w-2/5 sm:mx-auto sm:px-0">
-        {answers.map((answer, index) => {
-          return (
-            <QACard
-              profile={`https://randomuser.me/api/portraits/men/${index}.jpg`}
-              title={answer.questionText}
-              key={index}
-              resolver={answer.userName}
-              answer={answer.answerText}
-              imgSrc={answer.imageLink}
-              questionID={answer.qid}
-              userID={answer.uid}
-            ></QACard>
-          );
-        })}
-      </div>
-      <AddQuestionModal />
-    </div>
+    <>
+      {!loadingList ? (
+        <div>
+          <div className="flex flex-col w-full px-2 mt-6 space-y-4 sm:w-2/5 sm:mx-auto sm:px-0">
+            {answers.map((answer, index) => {
+              return (
+                <QACard
+                  profile={`https://randomuser.me/api/portraits/men/${index}.jpg`}
+                  title={answer.questionText}
+                  key={index}
+                  resolver={answer.userName}
+                  answer={answer.answerText}
+                  imgSrc={answer.imageLink}
+                  questionID={answer.qid}
+                  userID={answer.uid}
+                ></QACard>
+              );
+            })}
+          </div>
+          <AddQuestionModal />
+        </div>
+      ) : (
+        <SkeletonLoaderList page="home" />
+      )}
+    </>
   );
 };
 

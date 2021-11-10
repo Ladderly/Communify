@@ -1,6 +1,7 @@
 import firebase from "firebase/compat";
 import React, { FC, memo, useContext, useEffect, useState } from "react";
 import QuestionCard from "../../components/QuestionCard";
+import SkeletonLoaderList from "../../components/SkeletonLoaderList";
 import { AuthContext } from "../../context/AuthContext";
 import { firestore } from "../../firebase";
 
@@ -8,7 +9,8 @@ interface Props {}
 
 const QuestionList: FC<Props> = (props) => {
   const user = useContext(AuthContext);
-  if (!sessionStorage.getItem("user")) {
+  const [loadingList, setLoadingList] = useState<boolean>(false);
+  if (!sessionStorage.getItem("user") && user) {
     sessionStorage.setItem("user", user!.uid);
   }
   const [questionData, setQuestionData] = useState<
@@ -16,6 +18,7 @@ const QuestionList: FC<Props> = (props) => {
   >([]);
   useEffect(() => {
     const fetchList = async () => {
+      setLoadingList(true);
       await firestore
         .collection("questions")
         .where("uid", "!=", sessionStorage.getItem("user")!)
@@ -25,6 +28,7 @@ const QuestionList: FC<Props> = (props) => {
             setQuestionData((prev) => [...prev, question.data()]);
           });
         })
+        .then(() => setLoadingList(false))
         .catch((error) => {
           console.log(error);
         });
@@ -33,19 +37,26 @@ const QuestionList: FC<Props> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <div>
-      {questionData.map((question) => {
-        return (
-          <QuestionCard
-            questionID={question.qid}
-            tag={question.tag}
-            key={question.qid}
-          >
-            {question.questionText}
-          </QuestionCard>
-        );
-      })}
-    </div>
+    <>
+      {!loadingList ? (
+        <div>
+          {" "}
+          {questionData.map((question) => {
+            return (
+              <QuestionCard
+                questionID={question.qid}
+                tag={question.tag}
+                key={question.qid}
+              >
+                {question.questionText}
+              </QuestionCard>
+            );
+          })}{" "}
+        </div>
+      ) : (
+        <SkeletonLoaderList page="questionList" />
+      )}
+    </>
   );
 };
 

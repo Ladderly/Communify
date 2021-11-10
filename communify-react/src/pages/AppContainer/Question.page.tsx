@@ -18,6 +18,7 @@ import firebase from "firebase/compat";
 import { firestore, storage } from "../../firebase";
 import { AuthContext } from "../../context/AuthContext";
 import AnswerCard from "../../components/AnswerCard";
+import SkeletonLoaderList from "../../components/SkeletonLoaderList";
 
 interface Props {}
 
@@ -31,10 +32,12 @@ const Question: React.FC<Props> = (props) => {
   const [question, setQuestion] = useState<string>("");
   const [answer, setAnswer] = useState<string>("");
   const [answers, setAnswers] = useState<firebase.firestore.DocumentData[]>([]);
+  const [loadingList, setLoadingList] = useState<boolean>(false);
   const [alertVisibility, setAlertVisibility] = useState<boolean>(false);
   useEffect(() => {
     const fetchAnswers = async () => {
       try {
+        setLoadingList(true);
         await firestore
           .collection("answers")
           .where("qid", "==", questionID)
@@ -44,7 +47,8 @@ const Question: React.FC<Props> = (props) => {
               console.log("run");
               setAnswers((prev) => [...prev, answer.data()]);
             });
-          });
+          })
+          .then(() => setLoadingList(false));
       } catch (err) {
         console.log(err);
       }
@@ -130,92 +134,100 @@ const Question: React.FC<Props> = (props) => {
     image ? uploadImage(image) : uploadAnswer();
   };
   return (
-    <div className="flex flex-col w-full px-2 mt-6 space-y-4 sm:px-0 sm:w-2/5 sm:mx-auto">
-      <div className="relative flex flex-col bg-gray-100 shadow-lg">
-        {alertVisibility && !user && (
-          <Alert
-            onClose={() => setAlertVisibility(false)}
-            severity="warning"
-            className="absolute left-0 right-0 mx-auto text-center transition duration-1000 ease-in-out -top-12 sm:-top-8 w-80 sm:w-96"
-          >
-            Kindly Sign In to Answer Questions!
-          </Alert>
-        )}
-        <h1 className="items-center p-5 text-xl font-semibold h-15">
-          {question}
-        </h1>
-        <input
-          type="file"
-          onChange={handleImageChange}
-          className="hidden"
-          ref={inputRef}
-        />
-        <Disclosure as={Fragment}>
-          <Disclosure.Button as={Fragment}>
-            <button className="block mr-auto">
-              <FaPenAlt className="w-10 h-10 p-2 ml-4 border rounded-full border-secondary-400 text-secondary-300" />{" "}
-            </button>
-          </Disclosure.Button>
-          <Disclosure.Panel as={Fragment}>
-            {({ close }) => (
-              <div className="mt-5 ml-4 mr-4 transform ">
-                <TextField
-                  onChange={handleAnswerChange}
-                  value={answer}
-                  className="w-full"
-                  id="outlined-multiline-static"
-                  label="Enter Answer"
-                  multiline
-                  rows={4}
-                  placeholder="Please enter appropriate answer.."
-                  color="success"
-                />
-                <div className="flex justify-end mt-2 space-x-2">
-                  <BsFillImageFill className="w-6 h-6 text-secondary-400" />
-                  <button
-                    onClick={() => inputRef.current.click()}
-                    className="text-sm font-semibold text-secondary-400"
-                  >
-                    Add image
+    <>
+      {!loadingList ? (
+        <div className="flex flex-col w-full px-2 mt-6 space-y-4 sm:px-0 sm:w-2/5 sm:mx-auto">
+          <div className="relative flex flex-col bg-gray-100 shadow-lg">
+            {alertVisibility && !user && (
+              <Alert
+                onClose={() => setAlertVisibility(false)}
+                severity="warning"
+                className="absolute left-0 right-0 mx-auto text-center transition duration-1000 ease-in-out -top-12 sm:-top-8 w-80 sm:w-96"
+              >
+                Kindly Sign In to Answer Questions!
+              </Alert>
+            )}
+            <h1 className="items-center p-5 text-xl font-semibold h-15">
+              {question}
+            </h1>
+            <input
+              type="file"
+              onChange={handleImageChange}
+              className="hidden"
+              ref={inputRef}
+            />
+            <Disclosure as={Fragment}>
+              <Disclosure.Button as={Fragment}>
+                <button className="block mr-auto">
+                  <FaPenAlt className="w-10 h-10 p-2 ml-4 border rounded-full border-secondary-400 text-secondary-300" />{" "}
+                </button>
+              </Disclosure.Button>
+              <Disclosure.Panel as={Fragment}>
+                {({ close }) => (
+                  <div className="mt-5 ml-4 mr-4 transform ">
+                    <TextField
+                      onChange={handleAnswerChange}
+                      value={answer}
+                      className="w-full"
+                      id="outlined-multiline-static"
+                      label="Enter Answer"
+                      multiline
+                      rows={4}
+                      placeholder="Please enter appropriate answer.."
+                      color="success"
+                    />
+                    <div className="flex justify-end mt-2 space-x-2">
+                      <BsFillImageFill className="w-6 h-6 text-secondary-400" />
+                      <button
+                        onClick={() => inputRef.current.click()}
+                        className="text-sm font-semibold text-secondary-400"
+                      >
+                        Add image
+                      </button>
+                    </div>
+                    <Button
+                      loading={loading}
+                      disabled={answer && user ? false : true}
+                      onClick={() => {
+                        addAnswer();
+                      }}
+                      className="block w-32 mt-4 mr-auto"
+                    >
+                      Add Answer
+                    </Button>
+                  </div>
+                )}
+              </Disclosure.Panel>
+            </Disclosure>
+            <div className="mt-4 border-b-2 border-secondary-400"></div>
+            <div className="py-2 mx-5">
+              <div className="flex items-center justify-between">
+                <p className="font-semibold">{numOfAnswers} ANSWERS</p>
+                <div>
+                  <button>
+                    <IoMdShareAlt className="w-8 h-8 text-secondary-400" />
                   </button>
                 </div>
-                <Button
-                  loading={loading}
-                  disabled={answer && user ? false : true}
-                  onClick={() => {
-                    addAnswer();
-                  }}
-                  className="block w-32 mt-4 mr-auto"
-                >
-                  Add Answer
-                </Button>
               </div>
-            )}
-          </Disclosure.Panel>
-        </Disclosure>
-        <div className="mt-4 border-b-2 border-secondary-400"></div>
-        <div className="py-2 mx-5">
-          <div className="flex items-center justify-between">
-            <p className="font-semibold">{numOfAnswers} ANSWERS</p>
-            <div>
-              <button>
-                <IoMdShareAlt className="w-8 h-8 text-secondary-400" />
-              </button>
             </div>
           </div>
+          <div>
+            {answers.map((answer, index) => {
+              return (
+                <AnswerCard
+                  key={index}
+                  resolver={answer.userName}
+                  answer={answer.answerText}
+                  imgSrc={answer.imageLink}
+                ></AnswerCard>
+              );
+            })}
+          </div>
         </div>
-      </div>
-      {answers.map((answer, index) => {
-        return (
-          <AnswerCard
-            key={index}
-            resolver={answer.userName}
-            answer={answer.answerText}
-            imgSrc={answer.imageLink}
-          ></AnswerCard>
-        );
-      })}
-    </div>
+      ) : (
+        <SkeletonLoaderList page="home" />
+      )}
+    </>
   );
 };
 Question.defaultProps = {};
